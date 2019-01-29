@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+
+  app:
+    image: rails
+    container_name: 'docker-example-app'
+    environment:
+      DATABASE_URL: mysql2://root@db:3306
+      BUNDLE_PATH: /bundle
+    volumes:
+      - ./app:/app
+      - bundle-data:/bundle
+    working_dir: /app
+    ports:
+      - 3000:3000
+    links:
+      - db
+    command: rails s
+
+  db:
+    image: mariadb
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: app_development
+
+volumes:
+  bundle-data:
